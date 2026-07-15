@@ -11,48 +11,52 @@ or off (the "flying elements").
 
 The `WBB6` in the name targets **WoltLab Suite / Burning Board 6.x**.
 
-## Current state of the repository
+## Repository layout
 
-> Read this before assuming any code exists.
-
-As of now the repository is **scaffold-only**. The complete tracked contents are:
-
-```
-LICENSE      # GNU license text
-README.md    # one-line project description
-CLAUDE.md    # this file
-```
-
-There is **no plugin source code, no package archive, and no build tooling yet.**
-Do not reference files, classes, templates, or an `option.xml`/`package.xml` as
-if they exist — they do not. When you add the first real code, **update the
-"Repository layout" section below** to match reality.
-
-## Repository layout (target)
-
-WoltLab plugins are distributed as a `.tar` package built from a defined file
-layout. When this plugin gains code, it will conventionally look like:
+The plugin is intentionally tiny — it has **no PHP** and no `files/` payload.
+The complete tracked contents are:
 
 ```
-package.xml              # Package metadata + install/update instructions (required)
-files/                   # PHP/other files copied into the WSC installation
-  lib/                   # PHP classes (PSR-style, namespaced)
-templates/               # Frontend .tpl template files
-acptemplates/            # Admin Control Panel .tpl template files
-style/                   # SCSS/CSS delivered by the plugin
-  *.scss
-option.xml               # Options exposed in the ACP (e.g. the CSS on/off toggle)
-templateListener.xml     # Hooks that inject template code at defined event points
-eventListener.xml        # PHP event listeners
-language/                # <language>.xml translation files (e.g. de.xml, en.xml)
+package.xml            # Package metadata + install instructions (required)
+userOption.xml         # The boolean user option `flyingElements`
+templateListener.xml   # Two head listeners that emit the plugin's CSS
+language/
+  de.xml               # German label + description for the option
+  en.xml               # English label + description for the option
+build.sh               # Bundles the above into the installable .tar
+README.md              # User-facing usage + migration notes
+CLAUDE.md              # this file
+LICENSE                # GNU license text
 ```
 
-The core toggle feature will most likely be implemented as either:
-- an **ACP option** (`option.xml`) whose value gates whether the CSS is emitted, and/or
-- a **template listener** (`templateListener.xml`) that conditionally injects a
-  `<style>` block or a CSS class based on that option / a user preference.
+Building the package (`./build.sh`) produces
+`de.imperatorbob.flyingelements.tar`, which is uploaded via the ACP
+(*Configuration → Packages → Install Package*). No `files.tar` is produced
+because the CSS is delivered inline through the template listener.
 
-Confirm the actual approach against the code once it exists rather than assuming.
+## How the toggle is implemented
+
+The feature is a **user option + template listener**, deliberately with **no
+PHP, no event listener, and no body-class hacks** (those `<body>`/`<html>`
+class variables are undocumented internals in WSC 6.x and are avoided for
+update-safety).
+
+- `userOption.xml` defines a boolean option `flyingElements`
+  (category `settings.general.appearance`, `defaultvalue=1`, `editable=3`), so
+  it appears as a checkbox in each user's own account settings. Read it in a
+  template as `{if $__wcf->user->flyingElements}`; guests evaluate to false.
+- `templateListener.xml` hooks the `headInclude` template at two events, chosen
+  for their position in the head cascade
+  (`{event metaTags}` → active style CSS → `{event stylesheets}`):
+  - **`metaTags`** (before the style CSS): base `.fly-item` positioning, so any
+    style can still override size/position/z-index.
+  - **`stylesheets`** (after the style CSS): controls `display`, so the toggle
+    wins **without `!important`**. Hides `.fly-item` only for a logged-in user
+    who disabled the option.
+
+Default is **opt-out**: enabled for everyone (guests included), any registered
+user can switch it off. Per-style CSS is expected to define only the graphic
+(`background-image`) and animation (`@keyframes` + `animation`), not `display`.
 
 ## Development workflow
 
@@ -65,36 +69,35 @@ Confirm the actual approach against the code once it exists rather than assuming
   other branch without explicit permission.
 - Do **not** open a pull request unless explicitly asked.
 
-### Building a WoltLab package (for reference, once code exists)
+### Building the package
 
-WoltLab packages are plain `.tar` archives. A typical manual build bundles the
-component archives and wraps them with `package.xml`:
+WoltLab packages are plain `.tar` archives. Run:
 
 ```sh
-# Example only — adjust to the real file set once it exists.
-tar cf files.tar -C files .
-tar cf templates.tar -C templates .
-tar cf <plugin>.tar package.xml files.tar templates.tar option.xml language/*.xml ...
+./build.sh
 ```
 
-The resulting `<plugin>.tar` is what gets uploaded via the WoltLab ACP
-(*Configuration → Packages → Install Package*). Many maintainers script this in
-a `Makefile`, shell script, or CI workflow — none exists here yet; add one and
-document it here when you do.
+It bundles `package.xml`, `userOption.xml`, `templateListener.xml`, and
+`language/*.xml` into `de.imperatorbob.flyingelements.tar`, which is uploaded via
+the WoltLab ACP (*Configuration → Packages → Install Package*). There is no
+`files.tar`: the CSS ships inline in the template listener, so nothing is copied
+into the WSC installation directory.
 
-There is currently **no test suite, linter, or CI configuration.** If you
-introduce PHP code, prefer aligning with WoltLab's coding standards and add
-tooling (e.g. `php -l` syntax checks, `phpstan`, a build script) alongside a
-note here.
+There is currently **no test suite, linter, or CI configuration** — the plugin
+is XML + a shell script only. Before committing, sanity-check the XML with
+`xmllint --noout *.xml language/*.xml` and confirm `./build.sh` produces the
+archive. If you ever add PHP, align with WoltLab's coding standards and add a
+`php -l` / `phpstan` step here.
 
 ## Key conventions
 
 - **Target platform:** WoltLab Suite Core / Burning Board **6.x**. Language
   features and APIs should match WSC 6.x (PHP 8.1+, its template syntax, its
   SCSS pipeline).
-- **CSS/SCSS:** styling should go through WoltLab's style system (SCSS delivered
-  via the `style/` folder or injected through a template listener) rather than
-  hardcoded inline styles, so the toggle integrates with the board's theming.
+- **CSS delivery:** the plugin's CSS is injected through the template listener
+  at the `headInclude` head events. SCSS/the `style/` PIP is deliberately **not**
+  used, because it compiles per style and would not apply cross-style; the head
+  listener applies on every page regardless of the active style.
 - **i18n:** user-facing strings and ACP option labels use WoltLab language
   items defined in `language/*.xml`, referenced as `{lang}...{/lang}` /
   `WCF::getLanguage()->get(...)`.
@@ -105,8 +108,8 @@ note here.
 
 - This is a very small, single-purpose plugin. Keep changes minimal and focused
   on the CSS-toggle feature; avoid introducing framework, build, or dependency
-  scaffolding that the project doesn't need.
+  scaffolding that the project doesn't need (no PHP, no event listeners, no SCSS
+  pipeline unless there's a concrete reason).
 - The README is the source of truth for intent; keep it and this file in sync
-  as the plugin takes shape.
-- When you add the first source files, **replace the "Current state" and
-  "Repository layout (target)" sections above with the actual structure.**
+  as the plugin changes.
+- If you bump the plugin, update `<version>`/`<date>` in `package.xml` together.

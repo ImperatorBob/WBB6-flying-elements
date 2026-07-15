@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package name="de.imperatorbob.flyingelements" xmlns="http://www.woltlab.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.woltlab.com http://www.woltlab.com/XSD/2019/package.xsd">
+	<packageinformation>
+		<packagename>Flying Elements</packagename>
+		<packagedescription>Liefert den stilübergreifenden CSS für die fliegenden Elemente (.fly-item) und gibt jedem angemeldeten Benutzer in den Kontoeinstellungen einen Schalter, um sie ein- oder auszublenden. Die konkrete Grafik und Animation bleibt weiterhin pro Stil anpassbar.</packagedescription>
+		<packagedescription language="en">Ships the cross-style CSS for the flying elements (.fly-item) and gives every registered user a switch in their account settings to show or hide them. The actual graphic and animation remain customizable per style.</packagedescription>
+		<version>1.0.0</version>
+		<date>2026-07-15</date>
+	</packageinformation>
+
+	<authorinformation>
+		<author>ImperatorBob</author>
+	</authorinformation>
+
+	<requiredpackages>
+		<requiredpackage minversion="6.0.0">com.woltlab.wcf</requiredpackage>
+	</requiredpackages>
+
+	<instructions type="install">
+		<instruction type="userOption">userOption.xml</instruction>
+		<instruction type="templateListener">templateListener.xml</instruction>
+		<instruction type="language">language/*.xml</instruction>
+	</instructions>
+</package>

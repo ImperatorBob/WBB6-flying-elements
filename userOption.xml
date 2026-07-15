@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data xmlns="http://www.woltlab.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.woltlab.com https://www.woltlab.com/XSD/6.0/userOption.xsd">
+	<import>
+		<options>
+			<!--
+				Boolean user option shown as a checkbox in the user's own
+				account settings (Settings -> Appearance).
+
+				  defaultvalue = 1  -> flying elements are visible by default
+				                       (guests and new users see them, as before)
+				  editable     = 3  -> EDITABILITY_OWNER (1) + EDITABILITY_ADMINISTRATOR (2)
+			-->
+			<option name="flyingElements">
+				<categoryname>settings.general.appearance</categoryname>
+				<optiontype>boolean</optiontype>
+				<defaultvalue>1</defaultvalue>
+				<editable>3</editable>
+				<showorder>100</showorder>
+			</option>
+		</options>
+	</import>
+</data>
