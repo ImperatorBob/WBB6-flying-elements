@@ -61,9 +61,9 @@ adds **CSS** — no HTML box, no template edits. Put this in the style's
     background-position: center;
     top: -60px;
 }
-.fly-item.fly-1 { left: 10%; background-image: url("leaf1.png"); animation: flyDown 12s linear infinite; }
-.fly-item.fly-2 { left: 45%; background-image: url("leaf2.png"); animation: flyDown 15s linear infinite 4s; }
-.fly-item.fly-3 { left: 75%; background-image: url("leaf3.png"); animation: flyDown 10s linear infinite 8s; }
+.fly-item.fly-1 { left: 10%; background-image: url("https://example.com/leaf.png"); animation: flyDown 12s linear infinite; }
+.fly-item.fly-2 { left: 45%; background-image: url("https://example.com/leaf.png"); animation: flyDown 15s linear infinite 4s; }
+.fly-item.fly-3 { left: 75%; background-image: url("https://example.com/leaf.png"); animation: flyDown 10s linear infinite 8s; }
 
 @keyframes flyDown {
     0%   { transform: translate(0, 0) rotate(0deg) scale(0.5); opacity: 0; }
@@ -74,6 +74,8 @@ adds **CSS** — no HTML box, no template edits. Put this in the style's
 
 Notes:
 
+- `https://example.com/leaf.png` is a placeholder — point it at your own
+  graphic. You can use a different image per element for variety.
 - The plugin injects `fly-1`…`fly-6`; a style styles as many as it wants. Any
   `.fly-item` a style doesn't define stays invisible (no background, 0 height).
 - **No `display` and no `!important`** are needed — the plugin controls those,
