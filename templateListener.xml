@@ -13,7 +13,7 @@
 			<templatename>headInclude</templatename>
 			<eventname>metaTags</eventname>
 			<nice>-100</nice>
-			<templatecode><![CDATA[<style>.fly-item{position:fixed;z-index:10000;pointer-events:none;width:50px;height:auto;}</style>]]></templatecode>
+			<templatecode><![CDATA[<style>{literal}.fly-item{position:fixed;z-index:10000;pointer-events:none;width:50px;height:auto;}{/literal}</style>]]></templatecode>
 		</templatelistener>
 
 		<!--
@@ -29,11 +29,26 @@
 			<eventname>stylesheets</eventname>
 			<nice>100</nice>
 			<templatecode><![CDATA[<style>
-.fly-item{display:block;}
+{literal}.fly-item{display:block;}{/literal}
 {if $__wcf->user->userID && !$__wcf->user->flyingElements}
-.fly-item{display:none;animation:none;}
+{literal}.fly-item{display:none;animation:none;}{/literal}
 {/if}
 </style>]]></templatecode>
+		</templatelistener>
+
+		<!--
+			3) The flying-element markup itself, injected once per page at the
+			   stable `footer` event (end of <body>). This lets every style
+			   customize the elements with CSS only (background-image + animation)
+			   without adding an HTML box or editing templates. Elements without
+			   per-style CSS stay invisible (no background, collapsed height).
+		-->
+		<templatelistener name="flyingElementsMarkup">
+			<environment>user</environment>
+			<templatename>footer</templatename>
+			<eventname>footer</eventname>
+			<nice>0</nice>
+			<templatecode><![CDATA[<div class="fly-item fly-1"></div><div class="fly-item fly-2"></div><div class="fly-item fly-3"></div><div class="fly-item fly-4"></div><div class="fly-item fly-5"></div><div class="fly-item fly-6"></div>]]></templatecode>
 		</templatelistener>
 	</import>
 </data>

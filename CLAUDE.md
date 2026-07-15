@@ -45,18 +45,27 @@ update-safety).
   (category `settings.general.appearance`, `defaultvalue=1`, `editable=3`), so
   it appears as a checkbox in each user's own account settings. Read it in a
   template as `{if $__wcf->user->flyingElements}`; guests evaluate to false.
-- `templateListener.xml` hooks the `headInclude` template at two events, chosen
-  for their position in the head cascade
-  (`{event metaTags}` → active style CSS → `{event stylesheets}`):
-  - **`metaTags`** (before the style CSS): base `.fly-item` positioning, so any
-    style can still override size/position/z-index.
-  - **`stylesheets`** (after the style CSS): controls `display`, so the toggle
-    wins **without `!important`**. Hides `.fly-item` only for a logged-in user
-    who disabled the option.
+- `templateListener.xml` has three listeners:
+  - Two hook the `headInclude` template, chosen for their position in the head
+    cascade (`{event metaTags}` → active style CSS → `{event stylesheets}`):
+    - **`metaTags`** (before the style CSS): base `.fly-item` positioning, so any
+      style can still override size/position/z-index.
+    - **`stylesheets`** (after the style CSS): controls `display`, so the toggle
+      wins **without `!important`**. Hides `.fly-item` only for a logged-in user
+      who disabled the option.
+  - One hooks the `footer` template at the stable `footer` event (end of
+    `<body>`) and injects the `.fly-item` markup itself
+    (`<div class="fly-item fly-1">` … `fly-6`). This means styles customize the
+    elements with **CSS only** — no HTML box, no template edits. Elements a
+    style doesn't define stay invisible (no background, collapsed height).
+  - Inline CSS in `templatecode` must wrap its `{ }` rule bodies in
+    `{literal}…{/literal}`; the template compiler would otherwise parse `{…}` as
+    template tags. Only the `{if}` condition is left as real template code.
 
 Default is **opt-out**: enabled for everyone (guests included), any registered
-user can switch it off. Per-style CSS is expected to define only the graphic
-(`background-image`) and animation (`@keyframes` + `animation`), not `display`.
+user can switch it off. Per-style CSS defines only the graphic
+(`background-image`) and animation (`@keyframes` + `animation`) on
+`.fly-item.fly-1`…`.fly-6`, not `display` and not the markup.
 
 ## Development workflow
 
