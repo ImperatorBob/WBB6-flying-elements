@@ -4,7 +4,7 @@
 		<packagename>Flying Elements</packagename>
 		<packagedescription>Liefert den stilübergreifenden CSS für die fliegenden Elemente (.fly-item) und gibt jedem angemeldeten Benutzer in den Kontoeinstellungen einen Schalter, um sie ein- oder auszublenden. Die konkrete Grafik und Animation bleibt weiterhin pro Stil anpassbar.</packagedescription>
 		<packagedescription language="en">Ships the cross-style CSS for the flying elements (.fly-item) and gives every registered user a switch in their account settings to show or hide them. The actual graphic and animation remain customizable per style.</packagedescription>
-		<version>1.0.1</version>
+		<version>1.0.2</version>
 		<date>2026-07-15</date>
 	</packageinformation>
 
@@ -23,6 +23,12 @@
 	</instructions>
 
 	<instructions type="update" fromversion="1.0.0">
+		<instruction type="userOption">userOption.xml</instruction>
+		<instruction type="templateListener">templateListener.xml</instruction>
+		<instruction type="language">language/*.xml</instruction>
+	</instructions>
+
+	<instructions type="update" fromversion="1.0.1">
 		<instruction type="userOption">userOption.xml</instruction>
 		<instruction type="templateListener">templateListener.xml</instruction>
 		<instruction type="language">language/*.xml</instruction>

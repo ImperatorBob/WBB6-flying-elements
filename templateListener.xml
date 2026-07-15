@@ -35,5 +35,20 @@
 {/if}
 </style>]]></templatecode>
 		</templatelistener>
+
+		<!--
+			3) The flying-element markup itself, injected once per page at the
+			   stable `footer` event (end of <body>). This lets every style
+			   customize the elements with CSS only (background-image + animation)
+			   without adding an HTML box or editing templates. Elements without
+			   per-style CSS stay invisible (no background, collapsed height).
+		-->
+		<templatelistener name="flyingElementsMarkup">
+			<environment>user</environment>
+			<templatename>footer</templatename>
+			<eventname>footer</eventname>
+			<nice>0</nice>
+			<templatecode><![CDATA[<div class="fly-item fly-1"></div><div class="fly-item fly-2"></div><div class="fly-item fly-3"></div><div class="fly-item fly-4"></div><div class="fly-item fly-5"></div><div class="fly-item fly-6"></div>]]></templatecode>
+		</templatelistener>
 	</import>
 </data>
