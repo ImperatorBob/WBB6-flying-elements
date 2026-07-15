@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data xmlns="http://www.woltlab.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.woltlab.com http://www.woltlab.com/XSD/2019/templateListener.xsd">
+	<import>
+		<!--
+			1) Base setup, injected at the `metaTags` event which fires BEFORE
+			   the active style's compiled stylesheet. Because it loads first,
+			   any style may still override size / position / z-index of the
+			   flying elements. `display` is intentionally NOT set here; it is
+			   controlled centrally below.
+		-->
+		<templatelistener name="flyingElementsBase">
+			<environment>user</environment>
+			<templatename>headInclude</templatename>
+			<eventname>metaTags</eventname>
+			<nice>-100</nice>
+			<templatecode><![CDATA[<style>.fly-item{position:fixed;z-index:10000;pointer-events:none;width:50px;height:auto;}</style>]]></templatecode>
+		</templatelistener>
+
+		<!--
+			2) Visibility toggle, injected at the `stylesheets` event which fires
+			   AFTER the active style's compiled stylesheet. Because it loads
+			   last, it reliably controls `display` without needing !important.
+			   Default is visible; a logged-in user who disabled the option gets
+			   the elements hidden.
+		-->
+		<templatelistener name="flyingElementsToggle">
+			<environment>user</environment>
+			<templatename>headInclude</templatename>
+			<eventname>stylesheets</eventname>
+			<nice>100</nice>
+			<templatecode><![CDATA[<style>
+.fly-item{display:block;}
+{if $__wcf->user->userID && !$__wcf->user->flyingElements}
+.fly-item{display:none;animation:none;}
+{/if}
+</style>]]></templatecode>
+		</templatelistener>
+	</import>
+</data>

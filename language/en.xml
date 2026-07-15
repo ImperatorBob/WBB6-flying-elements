@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<language xmlns="http://www.woltlab.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.woltlab.com http://www.woltlab.com/XSD/2019/language.xsd" languagecode="en">
+	<category name="wcf.user.option">
+		<item name="wcf.user.option.flyingElements"><![CDATA[Show flying elements]]></item>
+		<item name="wcf.user.option.flyingElements.description"><![CDATA[Disable this option to hide the animated flying elements (e.g. falling leaves).]]></item>
+	</category>
+</language>
