@@ -13,7 +13,7 @@
 			<templatename>headInclude</templatename>
 			<eventname>metaTags</eventname>
 			<nice>-100</nice>
-			<templatecode><![CDATA[<style>.fly-item{position:fixed;z-index:10000;pointer-events:none;width:50px;height:auto;}</style>]]></templatecode>
+			<templatecode><![CDATA[<style>{literal}.fly-item{position:fixed;z-index:10000;pointer-events:none;width:50px;height:auto;}{/literal}</style>]]></templatecode>
 		</templatelistener>
 
 		<!--
@@ -29,9 +29,9 @@
 			<eventname>stylesheets</eventname>
 			<nice>100</nice>
 			<templatecode><![CDATA[<style>
-.fly-item{display:block;}
+{literal}.fly-item{display:block;}{/literal}
 {if $__wcf->user->userID && !$__wcf->user->flyingElements}
-.fly-item{display:none;animation:none;}
+{literal}.fly-item{display:none;animation:none;}{/literal}
 {/if}
 </style>]]></templatecode>
 		</templatelistener>
